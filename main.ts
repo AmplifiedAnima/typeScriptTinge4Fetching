@@ -1,13 +1,21 @@
 
-function appendData(data: {}[]) {
+interface Person {
+    id: string;
+    company: string;
+    fullName: string;
+  }
+interface PersonData {
+  people: Person[]
+}
+function appendData(data: Person[]) {
     let tblBody = document.getElementById('tableWithContent') as HTMLTableElement;
-    let outPut = '';
+    let outPut: string = '';
     
     //data.sort((a,b) => a.company.localeCompare(b.company));
 
-    let groups = data.reduce((acc: any , curr: any) => {
+    let groups = data.reduce((acc: {[key:string]: Person[]}, curr: Person)=> {
       if (!acc[curr.company]) {
-        acc[curr.company] = [];
+        acc[curr.company]  = [];
       }
 
       acc[curr.company].push(curr);
@@ -32,10 +40,10 @@ function appendData(data: {}[]) {
   }
 
 
-const asyncForPete = async () => {
+const asyncForPete = async () : Promise<void> => {
     try {
         const res = await fetch('http://localhost:3000/people');
-        const data = await res.json();
+        const data : Person[] = await res.json();
         appendData(data);
         
     }
