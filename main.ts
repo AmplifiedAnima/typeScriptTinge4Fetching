@@ -4,22 +4,24 @@ interface Person {
     company: string;
     fullName: string;
   }
-interface PersonData {
-  people: Person[]
-}
+
+type PersonData = {
+  [key: string]: Person[];
+};
+
 function appendData(data: Person[]) {
-    let tblBody = document.getElementById('tableWithContent') as HTMLTableElement;
+    const tblBody: HTMLElement | null = document.getElementById('tableWithContent');
     let outPut: string = '';
     
     //data.sort((a,b) => a.company.localeCompare(b.company));
 
-    let groups = data.reduce((acc: {[key:string]: Person[]}, curr: Person)=> {
-      if (!acc[curr.company]) {
-        acc[curr.company]  = [];
+    let groups = data.reduce<PersonData>((groupedData, currentPerson)  => {
+      if (!groupedData[currentPerson.company]) {
+        groupedData[currentPerson.company]  = [];
       }
 
-      acc[curr.company].push(curr);
-      return acc;
+      groupedData[currentPerson.company].push(currentPerson);
+      return groupedData;
    
     }, {});
  
@@ -36,11 +38,14 @@ function appendData(data: Person[]) {
                    </tr>`;
       }
     }
-    tblBody.innerHTML = outPut;
+    if (tblBody) {
+      tblBody.innerHTML = outPut;
+    }
   }
 
 
 const asyncForPete = async () : Promise<void> => {
+  
     try {
         const res = await fetch('http://localhost:3000/people');
         const data : Person[] = await res.json();

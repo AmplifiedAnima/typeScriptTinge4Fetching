@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 function appendData(data) {
-    let tblBody = document.getElementById('tableWithContent');
+    const tblBody = document.getElementById('tableWithContent');
     let outPut = '';
     //data.sort((a,b) => a.company.localeCompare(b.company));
     let groups = data.reduce((acc, curr) => {
@@ -17,6 +17,7 @@ function appendData(data) {
             acc[curr.company] = [];
         }
         acc[curr.company].push(curr);
+        console.log('current accumulator: ', acc);
         return acc;
     }, {});
     for (let company in groups) {
@@ -30,12 +31,15 @@ function appendData(data) {
                    </tr>`;
         }
     }
-    tblBody.innerHTML = outPut;
+    if (tblBody) {
+        tblBody.innerHTML = outPut;
+    }
 }
 const asyncForPete = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const res = yield fetch('http://localhost:3000/people');
         const data = yield res.json();
+        console.log('db data', data);
         appendData(data);
     }
     catch (error) {
