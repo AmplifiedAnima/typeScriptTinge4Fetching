@@ -1,5 +1,5 @@
 
-interface Person {
+type Person = {
     id: string;
     company: string;
     fullName: string;
@@ -9,13 +9,13 @@ type PersonData = {
   [key: string]: Person[];
 };
 
-function appendData(data: Person[]) {
+function appendData(fetchedDataFromJson: Person[]) {
     const tblBody: HTMLElement | null = document.getElementById('tableWithContent');
     let outPut: string = '';
     
     //data.sort((a,b) => a.company.localeCompare(b.company));
 
-    let groups = data.reduce<PersonData>((groupedData, currentPerson)  => {
+    const groups = fetchedDataFromJson.reduce<PersonData>((groupedData, currentPerson)  => {
       if (!groupedData[currentPerson.company]) {
         groupedData[currentPerson.company]  = [];
       }
@@ -25,7 +25,7 @@ function appendData(data: Person[]) {
    
     }, {});
  
-    for (let company in groups) {
+    for (const company in groups) {
       
       outPut += `<tr>
                   <td>${company}</td>
@@ -42,24 +42,18 @@ function appendData(data: Person[]) {
       tblBody.innerHTML = outPut;
     }
   }
-
-
-const asyncForPete = async () : Promise<void> => {
+  
+const asyncForPete = async (): Promise<void> => {
   
     try {
         const res = await fetch('http://localhost:3000/people');
-        const data : Person[] = await res.json();
-        appendData(data);
+        const fetchedDataFromJson: Person[] = await res.json();
+        appendData(fetchedDataFromJson);
         
     }
-    catch(error){
-        console.log(error);
-    }
-    finally{
-        console.log('Finished executing code...');
-    }
+    catch (error) {console.log(error);}
+
+    finally {console.log('Finished executing code...');}
 }
-
-
 
 asyncForPete();

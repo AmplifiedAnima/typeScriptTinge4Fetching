@@ -8,19 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-function appendData(data) {
+function appendData(fetchedDataFromJson) {
     const tblBody = document.getElementById('tableWithContent');
     let outPut = '';
     //data.sort((a,b) => a.company.localeCompare(b.company));
-    let groups = data.reduce((acc, curr) => {
-        if (!acc[curr.company]) {
-            acc[curr.company] = [];
+    const groups = fetchedDataFromJson.reduce((groupedData, currentPerson) => {
+        if (!groupedData[currentPerson.company]) {
+            groupedData[currentPerson.company] = [];
         }
-        acc[curr.company].push(curr);
-        console.log('current accumulator: ', acc);
-        return acc;
+        groupedData[currentPerson.company].push(currentPerson);
+        return groupedData;
     }, {});
-    for (let company in groups) {
+    for (const company in groups) {
         outPut += `<tr>
                   <td>${company}</td>
                 </tr>`;
@@ -38,9 +37,8 @@ function appendData(data) {
 const asyncForPete = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const res = yield fetch('http://localhost:3000/people');
-        const data = yield res.json();
-        console.log('db data', data);
-        appendData(data);
+        const fetchedDataFromJson = yield res.json();
+        appendData(fetchedDataFromJson);
     }
     catch (error) {
         console.log(error);
